@@ -64,9 +64,14 @@
 % Setting dump_frames to true will cause all of the tracking results
 % to be written out as .png images in the subdirectory ./dump/.  Make
 % sure this directory has already been created.
-title = 'dudek';
+title = 'ming-hsuan_light';
+data_dir = '/usr/data/vzhang/data/';
+full_title = [data_dir title];
 dump_frames = false;
+load_raw = true; % true if loading raw images
+online = true; % true if want the user to specify the template
 
+if ~online
 switch (title)
 case 'dudek';  p = [188,192,110,130,-0.08];
     opt = struct('numsample',600, 'condenssig',0.25, 'ff',1, ...
@@ -89,9 +94,9 @@ case 'trellis70';  p = [200 100 45 49 0];
 case 'fish';  p = [165 102 62 80 0];
     opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
                  'batchsize',5, 'affsig',[7,7,.01,.01,.002,.001]);
-case 'toycan';  p = [137 113 30 62 0];
-    opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
-                 'batchsize',5, 'affsig',[7,7,.01,.01,.002,.001]);
+%case 'toycan';  p = [137 113 30 62 0];
+%    opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
+%                 'batchsize',5, 'affsig',[7,7,.01,.01,.002,.001]);
 case 'car4';  p = [245 180 200 150 0];
     opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
                  'batchsize',5, 'affsig',[5,5,.025,.01,.002,.001]);
@@ -108,14 +113,29 @@ case 'mushiake'; p = [172 145 60 60 0];
 otherwise;  error(['unknown title ' title]);
 end
 
-if (~exist('datatitle') | ~strcmp(title,datatitle))
+else
+    imshow(data(:,:,1));
+    % pick the initial template
+    rect = getrect; %[xmin, ymin, width, height]
+    p = [rect(1)+rect(3)/2, rect(2)+rect(4)/2, rect(3), rect(4), 0];
+    % 
+    opt = struct('numsample',600, 'condenssig',0.75, 'ff',.99, ...
+                 'batchsize',5, 'affsig',[5,5,.01,.02,.002,.001]);
+end
+
+if load_raw
+  disp(['loading raw images, ' title '...']);
+  clear truepts;
+  close;
+  %load([full_title '.mat'],'data');
+elseif (~exist('datatitle') | ~strcmp(title,datatitle))
   if (exist('datatitle') & ~strcmp(title,datatitle))
     disp(['title does not match.. ' title ' : ' datatitle ', continue?']);
     pause;
   end
   disp(['loading ' title '...']);
   clear truepts;
-  load([title '.mat'],'data','datatitle','truepts');
+  load([full_title '.mat'],'data','datatitle','truepts');
 end
 
 param0 = [p(1), p(2), p(3)/32, p(5), p(4)/p(3), 0];
