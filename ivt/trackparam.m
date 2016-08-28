@@ -64,7 +64,7 @@
 % Setting dump_frames to true will cause all of the tracking results
 % to be written out as .png images in the subdirectory ./dump/.  Make
 % sure this directory has already been created.
-title = 'woman'; %'ming-hsuan_light';
+title = 'ball'; %'ming-hsuan_light';
 %data_dir = '/usr/data/vzhang/data/';
 data_dir = '/usr/data/Datasets/VOT/';
 full_title = [data_dir title];
@@ -120,7 +120,7 @@ else
     rect = getrect; %[xmin, ymin, width, height]
     p = [rect(1)+rect(3)/2, rect(2)+rect(4)/2, rect(3), rect(4), 0];
     % 
-    opt = struct('numsample',1600, 'condenssig',1.75, 'ff',.99, ...
+    opt = struct('numsample',600, 'condenssig',1.75, 'ff',.99, ...
                  'batchsize',5, 'affsig',[5,5,.01,.02,.002,.001]);
 end
 
