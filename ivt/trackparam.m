@@ -64,78 +64,94 @@
 % Setting dump_frames to true will cause all of the tracking results
 % to be written out as .png images in the subdirectory ./dump/.  Make
 % sure this directory has already been created.
-title = 'ball'; %'ming-hsuan_light';
-%data_dir = '/usr/data/vzhang/data/';
-data_dir = '/usr/data/Datasets/VOT/';
+
+clear; close all;
+title = 'tmt'; %'ming-hsuan_light';
+
+%data_dir = '/usr/data/vzhang/data/'; % for loading ivt dataset
+%data_dir = '/usr/data/Datasets/TMT/nl_bookIII_s3/'; % for loading other dataset
+data_dir = '/usr/data/Datasets/PAMI/mascot/';
 full_title = [data_dir title];
 dump_frames = false;
 load_raw = true; % true if loading raw images
 online = true; % true if want the user to specify the template
 
 if ~online
-switch (title)
-case 'dudek';  p = [188,192,110,130,-0.08];
-    opt = struct('numsample',600, 'condenssig',0.25, 'ff',1, ...
-                 'batchsize',5, 'affsig',[9,9,.05,.05,.005,.001]);
-% Use the following set of parameters for the ground truth experiment.
-% It's much slower, but more accuracte.
-%case 'dudek';  p = [188,192,110,130,-0.08];
-%     opt = struct('numsample',4000, 'condenssig',0.25, 'ff',0.99, ...
-%                 'batchsize',5, 'affsig',[11,9,.05,.05,0,0], ...
-%                 'errfunc','');
-case 'davidin300';  p = [160 106 62 78 -0.02];
-    opt = struct('numsample',600, 'condenssig',0.75, 'ff',.99, ...
-                 'batchsize',5, 'affsig',[5,5,.01,.02,.002,.001]);
-case 'sylv';  p = [145 81 53 53 -0.2];
-    opt = struct('numsample',600, 'condenssig',0.75, 'ff',.95, ...
-                 'batchsize',5, 'affsig',[7,7,.01,.02,.002,.001]);
-case 'trellis70';  p = [200 100 45 49 0];
-    opt = struct('numsample',600, 'condenssig',0.2, 'ff',.95, ...
-                 'batchsize',5, 'affsig',[4,4,.01,.01,.002,.001]);
-case 'fish';  p = [165 102 62 80 0];
-    opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
-                 'batchsize',5, 'affsig',[7,7,.01,.01,.002,.001]);
-%case 'toycan';  p = [137 113 30 62 0];
-%    opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
-%                 'batchsize',5, 'affsig',[7,7,.01,.01,.002,.001]);
-case 'car4';  p = [245 180 200 150 0];
-    opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
-                 'batchsize',5, 'affsig',[5,5,.025,.01,.002,.001]);
-case 'car11';  p = [89 140 30 25 0];
-    opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
-                 'batchsize',5, 'affsig',[5,5,.01,.01,.001,.001]);
-case 'mushiake'; p = [172 145 60 60 0];
-    opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
-                 'batchsize',5, 'affsig',[10, 10, .01, .01, .002, .001]);
-%case 'dudekgt';  p = [188,192,110,130,-0.08]; 
-%   opt = struct('numsample',4000, 'condenssig',1, 'ff',1, ...
-%                 'batchsize',5, 'affsig',[6,5,.05,.05,0,0], ...
-%                'errfunc','');
-otherwise;  error(['unknown title ' title]);
-end
-
+    switch (title)
+        case 'dudek';  p = [188,192,110,130,-0.08];
+            opt = struct('numsample',600, 'condenssig',0.25, 'ff',1, ...
+                'batchsize',5, 'affsig',[9,9,.05,.05,.005,.001]);
+            % Use the following set of parameters for the ground truth experiment.
+            % It's much slower, but more accuracte.
+            %case 'dudek';  p = [188,192,110,130,-0.08];
+            %     opt = struct('numsample',4000, 'condenssig',0.25, 'ff',0.99, ...
+            %                 'batchsize',5, 'affsig',[11,9,.05,.05,0,0], ...
+            %                 'errfunc','');
+        case 'davidin300';  p = [160 106 62 78 -0.02];
+            opt = struct('numsample',600, 'condenssig',0.75, 'ff',.99, ...
+                'batchsize',5, 'affsig',[5,5,.01,.02,.002,.001]);
+        case 'sylv';  p = [145 81 53 53 -0.2];
+            opt = struct('numsample',600, 'condenssig',0.75, 'ff',.95, ...
+                'batchsize',5, 'affsig',[7,7,.01,.02,.002,.001]);
+        case 'trellis70';  p = [200 100 45 49 0];
+            opt = struct('numsample',600, 'condenssig',0.2, 'ff',.95, ...
+                'batchsize',5, 'affsig',[4,4,.01,.01,.002,.001]);
+        case 'fish';  p = [165 102 62 80 0];
+            opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
+                'batchsize',5, 'affsig',[7,7,.01,.01,.002,.001]);
+            %case 'toycan';  p = [137 113 30 62 0];
+            %    opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
+            %                 'batchsize',5, 'affsig',[7,7,.01,.01,.002,.001]);
+        case 'car4';  p = [245 180 200 150 0];
+            opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
+                'batchsize',5, 'affsig',[5,5,.025,.01,.002,.001]);
+        case 'car11';  p = [89 140 30 25 0];
+            opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
+                'batchsize',5, 'affsig',[5,5,.01,.01,.001,.001]);
+        case 'mushiake'; p = [172 145 60 60 0];
+            opt = struct('numsample',600, 'condenssig',0.2, 'ff',1, ...
+                'batchsize',5, 'affsig',[10, 10, .01, .01, .002, .001]);
+            %case 'dudekgt';  p = [188,192,110,130,-0.08];
+            %   opt = struct('numsample',4000, 'condenssig',1, 'ff',1, ...
+            %                 'batchsize',5, 'affsig',[6,5,.05,.05,0,0], ...
+            %                'errfunc','');
+        otherwise;  error(['unknown title ' title]);
+    end
+    
 else
     % pick the initial template
+    data = load_data(data_dir);
     imshow(data(:,:,1));
-    rect = getrect; %[xmin, ymin, width, height]
-    p = [rect(1)+rect(3)/2, rect(2)+rect(4)/2, rect(3), rect(4), 0];
-    % 
-    opt = struct('numsample',600, 'condenssig',1.75, 'ff',.99, ...
-                 'batchsize',5, 'affsig',[5,5,.01,.02,.002,.001]);
+    %rect = getrect; %[xmin, ymin, width, height]
+    %p = [rect(1)+rect(3)/2, rect(2)+rect(4)/2, rect(3), rect(4), 0];
+    % select polygon
+    [BW, xi, yi] = roipoly(data(:,:,1));
+    stats = regionprops(BW,'all');   
+    theta = atan2( yi(2)- yi(1), xi(2) - xi(1));
+    width = sqrt((xi(2)-xi(1))^2 + (yi(2)-yi(1))^2);
+    height = sqrt((xi(3)-xi(2))^2 + (yi(3)-yi(2))^2);
+    p = [stats.Centroid(1), stats.Centroid(2), width, height, theta];
+    opt = struct('numsample',600, 'condenssig',0.01, 'ff',1, ...
+        'batchsize',5, 'affsig',[4,4,.02,.02,.005,.001]);
 end
-
+% p = [px, py, sx, sy, theta]; The location of the target in the first
+% frame.
+% px and py are th coordinates of the centre of the box
+% sx and sy are the size of the box in the x (width) and y (height)
+%   dimensions, before rotation
+% theta is the rotation angle of the box
 if load_raw
-  disp(['loading raw images, ' title '...']);
-  clear truepts;
-  close;
+    disp(['loading raw images, ' data_dir '...']);
+    clear truepts;
+    close;
 elseif (~exist('datatitle') | ~strcmp(title,datatitle))
-  if (exist('datatitle') & ~strcmp(title,datatitle))
-    disp(['title does not match.. ' title ' : ' datatitle ', continue?']);
-    pause;
-  end
-  disp(['loading ' title '...']);
-  clear truepts;
-  load([full_title '.mat'],'data','datatitle','truepts');
+    if (exist('datatitle') & ~strcmp(title,datatitle))
+        disp(['title does not match.. ' title ' : ' datatitle ', continue?']);
+        pause;
+    end
+    disp(['loading ' title '...']);
+    clear truepts;
+    load([full_title '.mat'],'data','datatitle','truepts');
 end
 
 param0 = [p(1), p(2), p(3)/32, p(5), p(4)/p(3), 0];
@@ -143,6 +159,6 @@ param0 = affparam2mat(param0);
 
 opt.dump = dump_frames;
 if (opt.dump & exist('dump') ~= 7)
-  error('dump directory does not exist.. turning dump option off..');
-  opt.dump = 0;
+    error('dump directory does not exist.. turning dump option off..');
+    opt.dump = 0;
 end

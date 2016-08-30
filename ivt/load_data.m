@@ -1,13 +1,15 @@
-%% Specify the directory containing the .pgm files in dirname variable
+%% Specify the directory containing the .pgm/.jpg files in dirname variable
 %% Saves the images in a uint8 array called 'data'.
+function data = load_data(dirname, filetype)
+% dirname: Path of the data
+% filetype: file extention
 
-clear;
-% Path of the data
-%dirname = 'ming-hsuan_light/';
-dirname = '/usr/data/Datasets/VOT/ball/';
 % Sort the image files with the specified extention
-%filenames = dir([dirname '*.pgm']);
-filenames = dir([dirname '*.jpg']);
+if nargin == 1 
+    filetype = 'jpg';
+end
+ext = strcat('*.', filetype);
+filenames = dir([dirname ext]);
 filenames = sort({filenames.name});
 
 % read the first to see how large it should be

@@ -15,10 +15,11 @@
 rand('state',0);  randn('state',0);
 frame = double(data(:,:,1))/256;
 
+% Default values
 if ~exist('opt','var')  opt = [];  end
 if ~isfield(opt,'tmplsize')   opt.tmplsize = [32,32];  end
 if ~isfield(opt,'numsample')  opt.numsample = 400;  end
-if ~isfield(opt,'affsig')     opt.affsig = [4,4,.02,.02,.005,.001];  end
+if ~isfield(opt,'affsigz')     opt.affsig = [4,4,.02,.02,.005,.001];  end
 if ~isfield(opt,'condenssig') opt.condenssig = 0.01;  end
 
 if ~isfield(opt,'maxbasis')   opt.maxbasis = 16;  end
