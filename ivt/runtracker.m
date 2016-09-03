@@ -12,7 +12,7 @@
 
 
 % initialize variables
-rand('state',0);  randn('state',0);
+rand('state',0);  randn('state',0); % initialize random number generator, deprecated
 frame = double(data(:,:,1))/256;
 
 % Default values

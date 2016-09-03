@@ -64,9 +64,9 @@ else
   %[Q,R,E] = qr([ ff*U0*D, data ], 0); % old way
   
   data_proj = U0'*data; % new way
-  data_res = data - U0*data_proj;
+  data_res = data - U0*data_proj; % B_hat - U U' B_hat
   [q, dummy] = qr(data_res, 0);
-  Q = [U0 q];
+  Q = [U0 q]; % [U B_tilde]
   R = [ff*diag(D0) data_proj; zeros([size(data,2) length(D0)]) q'*data_res];
 
   [U,D,V] = svd(R, 0);

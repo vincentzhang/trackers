@@ -73,7 +73,7 @@ title = 'tmt'; %'ming-hsuan_light';
 data_dir = '/usr/data/Datasets/PAMI/mascot/';
 full_title = [data_dir title];
 dump_frames = false;
-load_raw = true; % true if loading raw images
+load_raw = true; % true if loading raw images rather than mat files
 online = true; % true if want the user to specify the template
 
 if ~online
@@ -125,6 +125,7 @@ else
     %rect = getrect; %[xmin, ymin, width, height]
     %p = [rect(1)+rect(3)/2, rect(2)+rect(4)/2, rect(3), rect(4), 0];
     % select polygon
+    disp('specify the corners clockwise');
     [BW, xi, yi] = roipoly(data(:,:,1));
     stats = regionprops(BW,'all');   
     theta = atan2( yi(2)- yi(1), xi(2) - xi(1));
