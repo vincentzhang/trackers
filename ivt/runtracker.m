@@ -56,7 +56,7 @@ else
 end
 
 % draw initial track window
-drawopt = drawtrackresult([], 0, frame, tmpl, param, pts);
+drawopt = drawtrackresult([], 0, frame, tmpl, param, pts, outfileID);
 disp('resize the window as necessary, then press any key..'); pause;
 drawopt.showcondens = 0;  drawopt.thcondens = 1/opt.numsample;
 
@@ -123,7 +123,7 @@ for f = 1:size(data,3)
     figure(2);  plot(trackerr,'r.-');
     figure(1);
   end
-  drawopt = drawtrackresult(drawopt, f, frame, tmpl, param, pts);
+  drawopt = drawtrackresult(drawopt, f, frame, tmpl, param, pts, outfileID);
   %%% UNCOMMENT THIS TO SAVE THE RESULTS (uses a lot of memory)
   %%% saved_params{f} = param;
   if (isfield(opt,'dump') && opt.dump > 0)
@@ -134,3 +134,4 @@ end
 duration = duration + toc;
 fprintf('%d frames took %.3f seconds : %.3f fps\n',f,duration,f/duration);
 
+fclose(outfileID);

@@ -66,9 +66,10 @@
 % sure this directory has already been created.
 
 clear; close all;
-title = 'tmt'; %'ming-hsuan_light';
+title = 'tmt'; %'ming-hsuan_light'; % only matters for original ivt data
 
-%data_dir = '/usr/data/vzhang/data/'; % for loading the original ivt dataset
+%data_dir = '/usr/data/vzhang/data/'; % for loading the original ivt dataset on lubicon
+%data_dir = '/usr/data2/datasets/tracking/ivt/'; % for loading the original ivt dataset at home
 %data_dir = '/usr/data/Datasets/TMT/nl_bookIII_s3/'; % for loading other dataset
 
 % this is equivalent to source_id in MTF, referring to 
@@ -81,9 +82,7 @@ dump_frames = false;
 load_raw = true; % true if loading raw images rather than mat files
 online = true; % true if want the user to specify the template
 read_from_gt = true; % true if reading template from ground truth
-
-% Read from ground_truth 
-gt_label = load_gt(data_dir);
+save_result = true; % true if wants to save the tracking results.
 
 if ~online
     switch (title)
@@ -132,8 +131,8 @@ else
     data = load_data(data_dir);
     imshow(data(:,:,1));
     if read_from_gt
-        % read_from_gt
-        [xi, yi] = read_corners(gt_label);
+        % read_from_gt, Read from ground_truth
+        [xi, yi] = read_corners(load_gt(data_dir));
         draw_gt(xi, yi);
         theta = atan2( yi(2)- yi(1), xi(2) - xi(1));
         width = sqrt((xi(2)-xi(1))^2 + (yi(2)-yi(1))^2);
@@ -155,6 +154,20 @@ else
     opt = struct('numsample',600, 'condenssig',0.01, 'ff',1, ...
         'batchsize',5, 'affsig',[4,4,.02,.02,.005,.001]);
 end
+
+if save_result
+    outdir = './'; % Save to current directory
+    startIndex = regexp(data_dir,'([^/]*)/$');
+    outfileID = fopen([outdir data_dir(startIndex:end-1) '_ivt.txt'], 'wt');
+    fprintf(outfileID, 'frame ulx uly urx ury lrx lry llx lly\n');
+    if online % write the template coordinates to the first frame
+        fprintf(outfileID, 'frame00001.jpg\t%f\t%f\t%f\t%f\t%f\t%f\t%f\t%f\n', ...
+            xi(1), yi(1), xi(2), yi(2), xi(3), yi(3), xi(4), yi(4) );
+    end
+else
+    outfileID = [];
+end
+
 % p = [px, py, sx, sy, theta]; The location of the target in the first
 % frame.
 % px and py are th coordinates of the centre of the box

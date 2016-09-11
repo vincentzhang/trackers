@@ -1,5 +1,5 @@
-function drawopt = drawtrackresult(drawopt, fno, frame, tmpl, param, pts)
-% function drawopt = drawtrackresult(drawopt, fno, frame, tmpl, param, pts)
+function drawopt = drawtrackresult(drawopt, fno, frame, tmpl, param, pts, outfileID)
+% function drawopt = drawtrackresult(drawopt, fno, frame, tmpl, param, pts, outfileID)
 %
 %   drawopt : misc info for drawing, intitially []
 %         [.showcoef] : shows coefficient
@@ -13,6 +13,7 @@ function drawopt = drawtrackresult(drawopt, fno, frame, tmpl, param, pts)
 %       [.err,mask] : error, mask image
 %       [.param,conf] : condensation
 %
+%   outfileID : file ID of the output tracking coordinates
 % uses: util/showimgs
 
 % Copyright (C) 2005 Jongwoo Lim and David Ross.
@@ -55,7 +56,11 @@ if (exist('pts'))
   if (size(pts,3) > 2)  plot(pts(1,:,3),pts(2,:,3),'rx','MarkerSize',10);  end;
 end
 text(5, 18, num2str(fno), 'Color','y', 'FontWeight','bold', 'FontSize',18);
-drawbox(sz, param.est, 'Color','r', 'LineWidth',2.5);
+if outfileID
+    drawbox(sz, param.est, 'Color','r', 'LineWidth',2.5, outfileID, fno);
+else
+    drawbox(sz, param.est, 'Color','r', 'LineWidth',2.5);
+end
 axis equal tight off; hold off;
 
 if (isfield(curaxis,'basis'))
