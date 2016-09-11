@@ -68,13 +68,22 @@
 clear; close all;
 title = 'tmt'; %'ming-hsuan_light';
 
-%data_dir = '/usr/data/vzhang/data/'; % for loading ivt dataset
+%data_dir = '/usr/data/vzhang/data/'; % for loading the original ivt dataset
 %data_dir = '/usr/data/Datasets/TMT/nl_bookIII_s3/'; % for loading other dataset
-data_dir = '/usr/data/Datasets/PAMI/mascot/';
+
+% this is equivalent to source_id in MTF, referring to 
+% the id of a sequence
+source_id = 39; 
+root_dir = '/usr/data/Datasets/TMT/';
+data_dir = [root_dir seq_name(source_id) '/'];
 full_title = [data_dir title];
 dump_frames = false;
 load_raw = true; % true if loading raw images rather than mat files
 online = true; % true if want the user to specify the template
+read_from_gt = true; % true if reading template from ground truth
+
+% Read from ground_truth 
+gt_label = load_gt(data_dir);
 
 if ~online
     switch (title)
@@ -122,16 +131,27 @@ else
     % pick the initial template
     data = load_data(data_dir);
     imshow(data(:,:,1));
-    %rect = getrect; %[xmin, ymin, width, height]
-    %p = [rect(1)+rect(3)/2, rect(2)+rect(4)/2, rect(3), rect(4), 0];
-    % select polygon
-    disp('specify the corners clockwise');
-    [BW, xi, yi] = roipoly(data(:,:,1));
-    stats = regionprops(BW,'all');   
-    theta = atan2( yi(2)- yi(1), xi(2) - xi(1));
-    width = sqrt((xi(2)-xi(1))^2 + (yi(2)-yi(1))^2);
-    height = sqrt((xi(3)-xi(2))^2 + (yi(3)-yi(2))^2);
-    p = [stats.Centroid(1), stats.Centroid(2), width, height, theta];
+    if read_from_gt
+        % read_from_gt
+        [xi, yi] = read_corners(gt_label);
+        draw_gt(xi, yi);
+        theta = atan2( yi(2)- yi(1), xi(2) - xi(1));
+        width = sqrt((xi(2)-xi(1))^2 + (yi(2)-yi(1))^2);
+        height = sqrt((xi(3)-xi(2))^2 + (yi(3)-yi(2))^2);
+        p = [mean(xi), mean(yi), width, height, theta];
+    else
+        % Let User specify
+        %rect = getrect; %[xmin, ymin, width, height]
+        %p = [rect(1)+rect(3)/2, rect(2)+rect(4)/2, rect(3), rect(4), 0];
+        % select polygon
+        disp('specify the corners clockwise');
+        [BW, xi, yi] = roipoly(data(:,:,1));
+        stats = regionprops(BW,'all');
+        theta = atan2( yi(2)- yi(1), xi(2) - xi(1));
+        width = sqrt((xi(2)-xi(1))^2 + (yi(2)-yi(1))^2);
+        height = sqrt((xi(3)-xi(2))^2 + (yi(3)-yi(2))^2);
+        p = [stats.Centroid(1), stats.Centroid(2), width, height, theta];
+    end
     opt = struct('numsample',600, 'condenssig',0.01, 'ff',1, ...
         'batchsize',5, 'affsig',[4,4,.02,.02,.005,.001]);
 end
@@ -154,9 +174,6 @@ elseif (~exist('datatitle') | ~strcmp(title,datatitle))
     clear truepts;
     load([full_title '.mat'],'data','datatitle','truepts');
 end
-
-param0 = [p(1), p(2), p(3)/32, p(5), p(4)/p(3), 0];
-param0 = affparam2mat(param0);
 
 opt.dump = dump_frames;
 if (opt.dump & exist('dump') ~= 7)

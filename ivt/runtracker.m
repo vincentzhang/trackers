@@ -17,7 +17,11 @@ frame = double(data(:,:,1))/256;
 
 % Default values
 if ~exist('opt','var')  opt = [];  end
-if ~isfield(opt,'tmplsize')   opt.tmplsize = [32,32];  end
+if ~isfield(opt,'tmplsize')   opt.tmplsize = [50,50];  end
+% convert param0
+param0 = [p(1), p(2), p(3)/opt.tmplsize(1), p(5), p(4)/p(3), 0];
+param0 = affparam2mat(param0);
+
 if ~isfield(opt,'numsample')  opt.numsample = 400;  end
 if ~isfield(opt,'affsigz')     opt.affsig = [4,4,.02,.02,.005,.001];  end
 if ~isfield(opt,'condenssig') opt.condenssig = 0.01;  end
